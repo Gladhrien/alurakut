@@ -11,6 +11,8 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: sans-serif;
+    background: url('https://images4.alphacoders.com/100/1008904.png');
+    background-size: contain;
     background-color: #D9E6F6;
   }
 
