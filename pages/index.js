@@ -46,26 +46,7 @@ function ProfileRelationsBox(propriedades) {
 }
 
 export default function Home() {
-  const [comunidades, setComunidades] = React.useState([
-    {
-      id: '1244516',
-      title: 'Eu odeio acordar cedo',
-      image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg',
-      url: 'https://www.orkut.br.com/MainCommunity?cmm=10000'
-    },
-    {
-      id: '4854849',
-      title: 'The Hollow Knights',
-      image: 'https://revolutionnow.com.br/wp-content/uploads/2018/03/HollowKnight1.jpg',
-      url: 'https://www.hollowknight.com/'
-    },
-    {
-      id: '6582554',
-      title: 'PET Computação UFRGS',
-      image: 'https://www.inf.ufrgs.br/pet/images/LogoPET_oficial.png',
-      url: 'https://www.inf.ufrgs.br/pet/projetos/index.html'
-    }
-  ]);
+  const [comunidades, setComunidades] = React.useState([]);
   const usuarioAleatorio = 'gladhrien';
   //const comunidades = ['Alurakut'];
   const pessoasFavoritas = [
@@ -88,7 +69,34 @@ export default function Home() {
       .then(function (respostaCompleta) {
         setSeguidores(respostaCompleta);
       })
-    console.log(seguidores);
+    // API GraphQL
+    fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        'Authorization': '7ab005e22a6ad4c16aa8b4dff43bf9',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        "query": `query {
+        allCommunities {
+          id 
+          title
+          imageUrl
+          destinationUrl
+          creatorSlug
+        }
+      }` })
+    })
+      .then((response) => response.json()) // Pega o retorno do response.json() e já retorna
+      .then((respostaCompleta) => {
+        const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
+        console.log(comunidadesVindasDoDato)
+        setComunidades(comunidadesVindasDoDato)
+      })
+    // .then(function (response) {
+    //   return response.json()
+    // })
   }, [])
 
   return (
@@ -166,8 +174,8 @@ export default function Home() {
               {comunidades.slice(0, 6).map((itemAtual) => {
                 return (
                   <li key={itemAtual.id}>
-                    <a href={itemAtual.url} key={itemAtual.title} target='_blank'>
-                      <img src={itemAtual.image} />
+                    <a href={itemAtual.destinationUrl} key={itemAtual.title} target='_blank'>
+                      <img src={itemAtual.imageUrl} />
                       <span>{itemAtual.title}</span>
                     </a>
                   </li>
